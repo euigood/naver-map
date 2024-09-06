@@ -49,4 +49,30 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
+// 장소 검색 API 호출
+app.get('/search', async (req, res) => {
+  const query = req.query.query;  // 검색어 예: '술집'
+  const coordinates = req.query.coordinates;  // 좌표 예: '127.137712,37.439945'
+
+  try {
+    const response = await axios.get('https://naveropenapi.apigw.ntruss.com/map-place/v1/search', {
+      const headers = {
+        "X-NCP-APIGW-API-KEY-ID": process.env.NAVER_CLIENT_ID,
+        "X-NCP-APIGW-API-KEY": process.env.NAVER_CLIENT_SECRET,
+      },
+      params: {
+        query: query,
+        coordinate: coordinates,
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send('Error occurred while searching');
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
 module.exports = app;
